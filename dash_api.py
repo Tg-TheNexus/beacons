@@ -1,6 +1,6 @@
 """API for nexus-dash: the dash hosts the content editor, this service stores the content.
 
-Server to server only: Authorization: Bearer $DASH_API_TOKEN (constant-time comparison). Without the variable the
+Server to server only: Authorization: Bearer $DASH_BEACONS_TOKEN (constant-time comparison). Without the variable the
 whole API answers 404, so it is off by default. Validation is the same store.save() the old /admin used (now removed).
 """
 import hmac
@@ -17,7 +17,7 @@ bp = Blueprint("dash_api", __name__, url_prefix="/api/dash")
 
 
 def _token():
-    return os.environ.get("DASH_API_TOKEN", "").strip()
+    return os.environ.get("DASH_BEACONS_TOKEN", "").strip()   # same name the dash sends with
 
 
 def guarded(fn):
