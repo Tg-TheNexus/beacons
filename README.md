@@ -33,7 +33,7 @@ Variáveis de ambiente (Railway → Variables):
 
 | Variável | Para quê |
 |---|---|
-| `DASH_API_TOKEN` | Token da API que o nexus-dash usa. Sem ele, `/api/dash/*` fica desligado (404). |
+| `DASH_BEACONS_TOKEN` | Token da API que o nexus-dash usa (mesmo nome no dash; o antigo `DASH_API_TOKEN` não é mais lido). Sem ele, `/api/dash/*` fica desligado (404). |
 | `DATA_DIR` | Pasta onde as edições são gravadas. No Railway use `/data`. |
 
 Para as edições sobreviverem a novos deploys, crie um **Volume** no serviço (Railway → serviço → Volumes → mount path `/data`) e defina `DATA_DIR=/data`. Sem volume, as edições somem no próximo deploy.
@@ -41,6 +41,6 @@ Para as edições sobreviverem a novos deploys, crie um **Volume** no serviço (
 ## nexus-dash e editor de painéis
 
 - `/api/dash/*` (conteúdo, salvar, restaurar padrão, backup) é a API que o nexus-dash usa para editar o conteúdo. Fica
-  desligada (404) sem `DASH_API_TOKEN` e exige `Authorization: Bearer` com esse valor. O editor em si mora no dash (aba Beacons).
+  desligada (404) sem `DASH_BEACONS_TOKEN` e exige `Authorization: Bearer` com esse valor. O editor em si mora no dash (aba Beacons).
 - `/editor-paineis` é o editor de painéis da Twitch (roda 100% no navegador, sem dados no servidor, `noindex`).
 - Para as edições sobreviverem a deploys, o serviço precisa de um volume e `DATA_DIR` apontando para ele.

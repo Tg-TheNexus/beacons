@@ -13,7 +13,7 @@ AUTH = {"Authorization": f"Bearer {TOKEN}"}
 @pytest.fixture
 def client(monkeypatch, tmp_path):
     monkeypatch.setenv("DATA_DIR", str(tmp_path))
-    monkeypatch.setenv("DASH_API_TOKEN", TOKEN)
+    monkeypatch.setenv("DASH_BEACONS_TOKEN", TOKEN)
     import importlib
 
     import app as app_module
@@ -25,7 +25,7 @@ def test_off_without_a_token_and_closed_to_wrong_ones(client, monkeypatch):
     assert client.get("/api/dash/content").status_code == 403
     assert client.get("/api/dash/content", headers={"Authorization": "Bearer nope"}).status_code == 403
     assert client.post("/api/dash/reset", headers={"Authorization": "Bearer nope"}).status_code == 403
-    monkeypatch.delenv("DASH_API_TOKEN")
+    monkeypatch.delenv("DASH_BEACONS_TOKEN")
     assert client.get("/api/dash/content", headers=AUTH).status_code == 404  # fail closed: the API does not exist
 
 
@@ -76,3 +76,9 @@ def test_language_switch_ignores_unknown_codes_and_external_redirects(client):
     assert r.status_code == 302 and r.headers["Location"].endswith("/") and "Set-Cookie" not in r.headers
     assert client.get("/lang/en?next=//evil.example").headers["Location"].endswith("/")
     assert "nx_lang=en" in client.get("/lang/en?next=/setup").headers["Set-Cookie"]
+
+
+def test_the_old_token_name_is_no_longer_accepted(client, monkeypatch):
+    monkeypatch.delenv("DASH_BEACONS_TOKEN")
+    monkeypatch.setenv("DASH_API_TOKEN", TOKEN)
+    assert client.get("/api/dash/content", headers=AUTH).status_code == 404   # no token configured: the API is off
